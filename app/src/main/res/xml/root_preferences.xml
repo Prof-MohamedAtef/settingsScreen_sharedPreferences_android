@@ -1,0 +1,31 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory app:title="@string/messages_header">
+        <EditTextPreference
+            app:key="@string/user_name_key"
+            app:title="@string/user_display_name"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="@string/email_key"
+            app:title="@string/email_display_name"
+            app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            app:defaultValue="true"
+            app:entries="@array/reply_entries"
+            app:entryValues="@array/reply_values"
+            app:key="@string/reply_set_title"
+            app:title="@string/reply_title"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/sync_header">
+        <SwitchPreferenceCompat
+            app:key="sync"
+            app:title="@string/sync_title" />
+        <SwitchPreferenceCompat
+            app:dependency="sync"
+            app:key="attachment"
+            app:summaryOff="@string/attachment_summary_off"
+            app:summaryOn="@string/attachment_summary_on"
+            app:title="@string/attachment_title" />
+    </PreferenceCategory>
+</PreferenceScreen>

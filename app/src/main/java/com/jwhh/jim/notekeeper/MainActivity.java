@@ -1,12 +1,17 @@
 package com.jwhh.jim.notekeeper;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.provider.Settings;
 import android.view.View;
 import com.google.android.material.navigation.NavigationView;
 import androidx.core.view.GravityCompat;
@@ -16,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -26,6 +32,7 @@ public class MainActivity extends AppCompatActivity
     private LinearLayoutManager mNotesLayoutManager;
     private CourseRecyclerAdapter mCourseRecyclerAdapter;
     private GridLayoutManager mCoursesLayoutManager;
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +65,23 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         mNoteRecyclerAdapter.notifyDataSetChanged();
+
+        updateNavHedear();
+    }
+
+    private void updateNavHedear() {
+        NavigationView navigationView=(NavigationView)findViewById(R.id.nav_view);
+        View headerView=navigationView.getHeaderView(0);
+        TextView user_text=(TextView) headerView.findViewById(R.id.text_user_name);
+        TextView user_email=(TextView) headerView.findViewById(R.id.text_user_email);
+
+        pref= PreferenceManager.getDefaultSharedPreferences(this);
+        String userName=pref.getString(getResources().getString(R.string.user_name_key),null);
+        String email=pref.getString(getResources().getString(R.string.reply_set_title),null);
+
+        user_text.setText(userName);
+        user_email.setText(email);
+
     }
 
     private void initializeDisplayContent() {
@@ -120,6 +144,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 
@@ -137,7 +162,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_courses) {
             displayCourses();
         } else if (id == R.id.nav_share) {
-            handleSelection(R.string.nav_share_message);
+//            handleSelection(R.string.nav_share_message);
+            handleShare();
         } else if (id == R.id.nav_send) {
             handleSelection(R.string.nav_send_message);
         }
@@ -145,6 +171,13 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void handleShare() {
+        View view = findViewById(R.id.list_items);
+        Snackbar.make(view, "share to "+
+                 pref.getString(getResources().getString(R.string.reply_set_title),null), Snackbar.LENGTH_LONG).show();
+
     }
 
     private void handleSelection(int message_id) {
